@@ -10,14 +10,13 @@ const defaultConfig = {
   // extraFiles: [],
   // useAbsPath: false,
   preset: 'lower',
-  options: {}
+  options: {},
 };
 
 const presetFileUrl = 'packages://ccc-obfuscated-code/preset.json';
 let presets = null;
 
 module.exports = {
-
   load() {
     Editor.Builder.on('build-start', this.onBuildStart);
     Editor.Builder.on('before-change-files', this.onBeforeChangeFiles);
@@ -29,7 +28,6 @@ module.exports = {
   },
 
   messages: {
-
     'open-panel'() {
       Editor.Panel.open('ccc-obfuscated-code');
     },
@@ -62,14 +60,13 @@ module.exports = {
         Editor.warn('[CC]', '预设文件下载地址 https://gitee.com/ifaswind/ccc-obfuscated-code/blob/master/preset.json');
         event.reply(null, {});
       }
-    }
-
+    },
   },
 
   /**
-   * 
-   * @param {BuildOptions} options 
-   * @param {Function} callback 
+   *
+   * @param {BuildOptions} options
+   * @param {Function} callback
    */
   onBuildStart(options, callback) {
     const config = getConfig();
@@ -79,9 +76,9 @@ module.exports = {
   },
 
   /**
-   * 
-   * @param {BuildOptions} options 
-   * @param {Function} callback 
+   *
+   * @param {BuildOptions} options
+   * @param {Function} callback
    */
   onBeforeChangeFiles(options, callback) {
     const config = getConfig();
@@ -108,28 +105,28 @@ module.exports = {
           }
         }
       }
+
       // 额外需要混淆的文件
-      // for (let i = 0; i < config.extraFiles.length; i++) {
-      //   if (config.extraFiles[i] === '') continue;
-      //   const path = config.useAbsPath ? config.extraFiles[i] : Path.join(options.dest, config.extraFiles[i]);
-      //   if (Fs.existsSync(path)) {
-      //     obfuscate(path, config.options);
-      //     Editor.log('[CC]', '已额外混淆文件', path);
-      //   } else {
-      //     Editor.warn('[CC]', '需额外混淆文件不存在', path);
-      //   }
-      // }
+      for (let i = 0; i < config.extraFiles.length; i++) {
+        if (config.extraFiles[i] === '') continue;
+        const path = config.useAbsPath ? config.extraFiles[i] : Path.join(options.dest, config.extraFiles[i]);
+        if (Fs.existsSync(path)) {
+          obfuscate(path, config.options);
+          Editor.log('[CC]', '已额外混淆文件', path);
+        } else {
+          Editor.warn('[CC]', '需额外混淆文件不存在', path);
+        }
+      }
       Editor.log('[CC]', '混淆已完成');
     }
 
     callback();
   },
-
-}
+};
 
 /**
  * 保存配置
- * @param {object} config 
+ * @param {object} config
  */
 function saveConfig(config) {
   // 查找目录
@@ -143,7 +140,9 @@ function saveConfig(config) {
     object = JSON.parse(Fs.readFileSync(configFilePath, 'utf8'));
   }
   // 写入配置
-  for (const key in config) { object[key] = config[key]; }
+  for (const key in config) {
+    object[key] = config[key];
+  }
   Fs.writeFileSync(configFilePath, JSON.stringify(object, null, 2));
   return configFilePath;
 }
@@ -163,7 +162,9 @@ function getConfig() {
     config.options = getPreset('off');
     if (config.preset !== 'off') {
       const preset = getPreset(config.preset);
-      for (const key in preset) { config.options[key] = preset[key]; }
+      for (const key in preset) {
+        config.options[key] = preset[key];
+      }
     }
   }
   return config;
@@ -171,7 +172,7 @@ function getConfig() {
 
 /**
  * 读取预设参数
- * @param {string} type 预设名 
+ * @param {string} type 预设名
  */
 function getPreset(type) {
   if (presets) return presets[type];
